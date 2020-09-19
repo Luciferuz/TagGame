@@ -30,7 +30,7 @@ public class GameField {
                 }
             }
         }
-        if (!isSolvable()) newGame();
+        if (!isSolvable()) newGame(); //если не существует решений, создаем новую игру
     }
 
     //Если N + K - четное, решение существует;
@@ -47,9 +47,9 @@ public class GameField {
             }
         }
         //прохожусь по одномерному массиву и считаю перестановки
-         for (int i = 0; i < size * size - 1; i++) {
-             if (temp[i] < temp[i + 1]) n++;
-         }
+        for (int i = 0; i < size * size - 1; i++) {
+            if (temp[i] < temp[i + 1]) n++;
+        }
 
         return (blank.getY() / 4 + n + 1) % 2 == 0;
     }
@@ -66,6 +66,14 @@ public class GameField {
     public void move(int xCord, int yCord) { //x y - координаты ячейки, на которую нажали
 
 
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getCell(int x, int y) {
+        return field[x][y];
     }
 
 }
