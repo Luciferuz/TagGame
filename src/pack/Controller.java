@@ -2,6 +2,7 @@ package pack;
 
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 
 public class Controller {
@@ -30,5 +31,11 @@ public class Controller {
 
     public void setGameField(GameField field) {
         this.field = field;
+    }
+
+    @FXML
+    public void startAuto() {
+        Automation automation = new Automation(field);
+        System.out.println("Нажата кнопка, чтобы начать сборку головоломки");
     }
 }

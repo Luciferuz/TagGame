@@ -63,9 +63,28 @@ public class GameField {
         }
     }
 
-    public void move(int xCord, int yCord) { //x y - координаты ячейки, на которую нажали
+    public void move(int x, int y) { //x y - координаты ячейки, которую надо передвинуть
+        int xEmpty = blank.getX();
+        int yEmpty = blank.getY();
+        if (isEmptyNear(x, y)) {
+            int valueBefore = field[x][y]; //temp
+            field[x][y] = 0;
+            field[xEmpty][yEmpty] = valueBefore;
+            blank.setNewPoint(x, y);
+        } else System.out.println("Перемещения не было");
+    }
 
-
+    //находится ли пустая ячейка около ячейки, которую надо передвинуть
+    public boolean isEmptyNear(int x, int y) { //x y - координаты ячейки, которую надо передвинуть
+        int xEmpty = blank.getX();
+        int yEmpty = blank.getY();
+        if (y == yEmpty) {
+            if (x + 1 == xEmpty || xEmpty + 1 == x) return true;
+        }
+        if (x == xEmpty) {
+            if (y + 1 == yEmpty || yEmpty + 1 == y) return true;
+        }
+        return false;
     }
 
     public int getSize() {
