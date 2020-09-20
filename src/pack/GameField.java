@@ -9,14 +9,13 @@ public class GameField {
 
     private int[][] field;
     private int size;
-    private Point blank;
+    private Point blank; //пустая ячейка
 
     public GameField(int size) {
         this.size = size;
-        newGame();
     }
 
-    private void newGame() {
+    public void newGame() {
         field = new int[size][size];
         Set<Integer> numbers = new HashSet<>();
         for (int y = 0; y < size; y++) {
@@ -102,6 +101,22 @@ public class GameField {
         return answer;
     }
 
+    public boolean endOfGame() {
+        return howManyCellsOnPlace() == 15;
+    }
+
+    public int howManyCellsOnPlace() {
+        int counter = 0;
+        int answer = 0;
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                if (field[x][y] == counter) answer++;
+                counter++;
+            }
+        }
+        return answer;
+    }
+
     public int getSize() {
         return size;
     }
@@ -110,10 +125,27 @@ public class GameField {
         return field[x][y];
     }
 
+    public void setField(int[][] newField) {
+        field = newField;
+    }
+
     public int[][] getField() {
         return field;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        GameField gamefield = (GameField) obj;
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                if (field[x][y] != gamefield.field[x][y]) return false;
+            }
+        }
+        return true;
+    }
 }
 // 0  1  2  3
 // 4  5  6  7

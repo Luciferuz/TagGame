@@ -1,28 +1,24 @@
 package pack;
 
-import java.sql.SQLOutput;
+import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Automation {
 
     private GameField field;
     private int size;
 
-    public Automation (GameField field){
+    public Automation (GameField field){ //передаем изначальную позицию
         this.field = field;
         size = field.getSize();
         run();
     }
 
-    //нужно сначала собрать первую строку и левую линию (1 2 3 4 5 9 13)
     public void run() { //основной алгоритм авторешателя
-       // while (!endOfGame()) {
-            List<Point> moves = field.nearMoves();
-            for (Point element : moves) {
-                System.out.println(element.getX() + "" + element.getY());
-            }
-
-        //}
+        List<Point> moves = field.nearMoves();
+        ArrayDeque<Element> queue = new ArrayDeque<>();
 
     }
 
@@ -44,19 +40,6 @@ public class Automation {
         return true;
     }
 
-    public boolean endOfGame() {
-        return howManyCellsOnPlace() == 15;
-    }
 
-    public int howManyCellsOnPlace() {
-        int counter = 1;
-        int answer = 0;
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                if (field.getCell(x, y) == counter) answer++;
-                counter++;
-            }
-        }
-        return answer;
-    }
+
 }
