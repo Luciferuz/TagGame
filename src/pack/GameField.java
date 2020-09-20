@@ -1,13 +1,15 @@
 package pack;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class GameField {
 
     private int[][] field;
     private int size;
-    private EmptyPoint blank;
+    private Point blank;
 
     public GameField(int size) {
         this.size = size;
@@ -22,7 +24,7 @@ public class GameField {
                 while (true) {
                     int random = (int) (Math.random() * size * size);
                     if (!numbers.contains(random)) {
-                        if (random == 0) blank = new EmptyPoint(x, y);
+                        if (random == 0) blank = new Point(x, y);
                         field[x][y] = random;
                         numbers.add(random);
                         break;
@@ -87,6 +89,19 @@ public class GameField {
         return false;
     }
 
+    public List<Point> nearMoves() { //выводит список ближайших коррдинат ячеек, которые могут быть перемещены
+        List<Point> answer = new LinkedList<>();
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                if (isEmptyNear(x, y)) {
+                    Point temp = new Point(x, y);
+                    answer.add(temp);
+                }
+            }
+        }
+        return answer;
+    }
+
     public int getSize() {
         return size;
     }
@@ -95,8 +110,20 @@ public class GameField {
         return field[x][y];
     }
 
+    public int[][] getField() {
+        return field;
+    }
+
 }
 // 0  1  2  3
 // 4  5  6  7
 // 8  9  10 11
 // 12 13 14 15
+
+//   ---------> x 0 1 2 3
+//  |
+//  |
+//  |
+//  |
+//  \/
+//   y 0 1 2 3
