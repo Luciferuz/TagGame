@@ -1,27 +1,45 @@
 package pack;
 
 import java.util.ArrayDeque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Automation {
 
-    private GameField field;
+    private GameField initial;
     private int size;
 
     public Automation (GameField field){ //передаем изначальную позицию
-        this.field = field;
+        initial = field;
         size = field.getSize();
         run();
     }
 
     public void run() { //основной алгоритм авторешателя
-        List<Point> moves = field.nearMoves();
+        List<Point> moves = initial.nearMoves();
         ArrayDeque<Element> queue = new ArrayDeque<>();
-
+        List<GameField> temp = newGameFields(initial, moves);
+        for (GameField element : temp) {
+            element.printField();
+        }
     }
 
+    public List<GameField> newGameFields (GameField before, List<Point> cellsThatCanBeMoved) { //будет создавать список новых игровыхполей которые могут возикнуть при передвижении пустого места в любом направдении (1 ход)
+        LinkedList<GameField> answer = new LinkedList<>();
+        for (Point cell : cellsThatCanBeMoved) {
+            int x = cell.getX();
+            int y = cell.getY();
+            int[][] fieldBefore = before.getField();
+            GameField temp = new GameField(fieldBefore);
+            temp.move(x,y);
+            answer.add(temp);
+        }
+        return answer;
+    }
+
+    /*
     public boolean topLineIsDone() {
         int counter = 1;
         for (int x = 0; x < size; x++) {
@@ -40,6 +58,8 @@ public class Automation {
         return true;
     }
 
+
+     */
 
 
 }

@@ -2,20 +2,24 @@ package pack;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
 
 public class Main extends Application {
 
-    private static final int size = 4;
-
     @Override
     public void start(Stage stage) throws Exception {
-        GameField field = new GameField(size);
-        field.newGame();
+        int[][] arrayField = new int[][]{
+                                        {1,2,3,4},
+                                        {5,7,6,8},
+                                        {9,11,10,12},
+                                        {13,14,0,15}
+        };
+        GameField field = new GameField(arrayField);
+
+        //field.newRandomGame();
+
         Graphics graphics = new Graphics(field);
         field.printField();
 
@@ -34,7 +38,7 @@ public class Main extends Application {
     }
 
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         launch(args);
     }
 }

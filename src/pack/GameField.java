@@ -8,14 +8,39 @@ import java.util.Set;
 public class GameField {
 
     private int[][] field;
-    private int size;
-    private Point blank; //пустая ячейка
+    private final int size = 4; //можно будет потом придумать что-то с этим и сделать возможность менять
+    private Point blank;        //пустая ячейка
 
-    public GameField(int size) {
-        this.size = size;
+    public GameField() {
+
     }
 
-    public void newGame() {
+    public GameField (int[][] field) {
+        this.field = field;
+        blank = findBlank();
+    }
+
+    private Point findBlank() {
+        Point blank = null;
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                if (field[x][y] == 0) blank = new Point(x, y);
+            }
+        }
+        return blank;
+    }
+
+
+    public void move(int x, int y) {
+        int xEmpty = blank.getX();
+        int yEmpty = blank.getY();
+        int valueBefore = field[x][y]; //temp
+        field[x][y] = 0;
+        field[xEmpty][yEmpty] = valueBefore;
+        blank.setNewPoint(x, y);
+    }
+
+    public void newRandomGame() { //создает новую игру с рандомными значениями и проверяет на решаемость
         field = new int[size][size];
         Set<Integer> numbers = new HashSet<>();
         for (int y = 0; y < size; y++) {
@@ -31,7 +56,7 @@ public class GameField {
                 }
             }
         }
-        if (!isSolvable()) newGame(); //если не существует решений, создаем новую игру
+        if (!isSolvable()) newRandomGame(); //если не существует решений, создаем новую игру
     }
 
     //Если N + K - четное, решение существует;
@@ -62,21 +87,11 @@ public class GameField {
             }
             System.out.println();
         }
-    }
-
-    public void move(int x, int y) { //x y - координаты ячейки, которую надо передвинуть
-        int xEmpty = blank.getX();
-        int yEmpty = blank.getY();
-        if (isEmptyNear(x, y)) {
-            int valueBefore = field[x][y]; //temp
-            field[x][y] = 0;
-            field[xEmpty][yEmpty] = valueBefore;
-            blank.setNewPoint(x, y);
-        } else System.out.println("Перемещения не было");
+        System.out.println("----------------");
     }
 
     //находится ли пустая ячейка около ячейки, которую надо передвинуть
-    public boolean isEmptyNear(int x, int y) { //x y - координаты ячейки, которую надо передвинуть
+    private boolean isEmptyNear(int x, int y) { //x y - координаты ячейки, которую надо передвинуть
         int xEmpty = blank.getX();
         int yEmpty = blank.getY();
         if (y == yEmpty) {
@@ -111,6 +126,18 @@ public class GameField {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 if (field[x][y] == counter) answer++;
+                counter++;
+            }
+        }
+        return answer;
+    }
+
+    public int howManyCellsNotOnPlace() {
+        int counter = 0;
+        int answer = 0;
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                if (field[x][y] != counter) answer++;
                 counter++;
             }
         }

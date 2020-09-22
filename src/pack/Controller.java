@@ -13,7 +13,7 @@ public class Controller {
     private Graphics graphics;
     private int size;
 
-    public void setImagesOnFlowPane() {
+    private void setImagesOnFlowPane() {
         flowpane.getChildren().clear();
         size = field.getSize();
         ImageView[][] images = graphics.getImages();
@@ -34,7 +34,7 @@ public class Controller {
     }
 
     @FXML
-    public void startAuto() {
+    public void startAuto() { //тут типо сделать запуск ии авторешатель
         Automation automation = new Automation(field);
         System.out.println("Нажата кнопка, чтобы начать сборку головоломки");
     }
