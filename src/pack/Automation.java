@@ -15,13 +15,10 @@ public class Automation {
 
     private void run() {
 
-        Comparator<Element> comparator = new Comparator<Element>() {
-            @Override
-            public int compare(Element o1, Element o2) {
-                int m1 = measure(o1);
-                int m2 = measure(o2);
-                return Integer.compare(m1, m2);
-            }
+        Comparator<Element> comparator = (o1, o2) -> {
+            int m1 = measure(o1);
+            int m2 = measure(o2);
+            return Integer.compare(m1, m2);
         };
         PriorityQueue<Element> queue = new PriorityQueue<>(comparator);
         queue.add(new Element(null, initial));
