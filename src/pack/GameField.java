@@ -1,46 +1,113 @@
 package pack;
-
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 public class GameField {
 
-    private int[][] field;
+    private int[][] field;      //игровое поле
     private final int size = 4; //можно будет потом придумать что-то с этим и сделать возможность менять
     private Point blank;        //пустая ячейка
+    private int h;              //мера
 
-    public GameField() {
-
+    public GameField(int[][] field) {
+        this.field = copy(field);
+        analyzeH();
     }
 
-    public GameField (int[][] field) {
-        this.field = field;
-        blank = findBlank();
-    }
-
-    private Point findBlank() {
-        Point blank = null;
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                if (field[x][y] == 0) blank = new Point(x, y);
+    private void analyzeH() {
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                if (field[x][y] == 0) {
+                    blank = new Point(x, y);
+                }
+                //считаем меру
+                boolean logic1 = field[x][y] != x * size + y + 1; //если ячейка не равна своему номиналу
+                boolean logic2 = field[x][y] != 0;                //и если ячейка не ноль
+                if (logic1 && logic2) h += 1;
             }
         }
-        return blank;
     }
 
+    public Iterable<GameField> neighbors() {
+        Set<GameField> neighbors = new HashSet<>();
+        int x = blank.getX();
+        int y = blank.getY();
 
-    public void move(int x, int y) {
-        int xEmpty = blank.getX();
-        int yEmpty = blank.getY();
-        int valueBefore = field[x][y]; //temp
-        field[x][y] = 0;
-        field[xEmpty][yEmpty] = valueBefore;
-        blank.setNewPoint(x, y);
+        //если походить нельзя, будет null
+        GameField move1 = move(x, y, x - 1, y); //left
+        GameField move2 = move(x, y, x + 1, y); //right
+        GameField move3 = move(x, y, x, y - 1); //down
+        GameField move4 = move(x, y, x, y + 1); //up
+
+        neighbors.add(move1);
+        neighbors.add(move2);
+        neighbors.add(move3);
+        neighbors.add(move4);
+
+        return neighbors;
     }
 
-    public void newRandomGame() { //создает новую игру с рандомными значениями и проверяет на решаемость
+    private GameField move(int x1, int y1, int x2, int y2) {
+        int[][] tempField = copy(field);
+        if (x2 >= size || y2 >= size || x2 < 0 || y2 < 0) return null;
+
+        int temp = tempField[x2][y2];
+        tempField[x2][y2] = tempField[x1][y1];
+        tempField[x1][y1] = temp;
+        return new GameField(tempField);
+    }
+
+    private int[][] copy(int[][] array) {
+        int[][] newArray = new int[size][size];
+        for (int x = 0; x < size; x++) {
+            System.arraycopy(array[x], 0, newArray[x], 0, size);
+        }
+        return newArray;
+    }
+
+    public int[][] getField() {
+        return field;
+    }
+
+    public void printField() {
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                System.out.print(String.format("%2d ", field[y][x]));
+            }
+            System.out.println();
+        }
+        System.out.println("-----------");
+    }
+
+    //Если N + K - четное, решение существует;
+    //где N - количество инверсий, а K = (номер строки пустоты) / 4 + 1; (это доказали несколько человек)
+    // https://e-maxx.ru/algo/15_puzzle
+    public boolean isSolvable() {
+        int n = 0;
+        int[] temp = new int[size * size];
+        int counter = 0;
+        //записал в темп чтобы проходиться по одномерному массиву
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                temp[counter] = field[x][y];
+                counter++;
+            }
+        }
+        //прохожусь по одномерному массиву и считаю перестановки
+        for (int i = 0; i < size * size; i++) {
+            if (temp[i] != 0) {
+                for (int j = 0; j < i; j++) {
+                    if (temp[j] > temp[i]) n++;
+                }
+            } else {
+               n = n + 1 + i / size;
+            }
+        }
+        return n % 2 == 0;
+    }
+
+    //создает новую игру с рандомными значениями и проверяет на решаемость
+    public void newRandomGame() {
         field = new int[size][size];
         Set<Integer> numbers = new HashSet<>();
         for (int y = 0; y < size; y++) {
@@ -48,7 +115,9 @@ public class GameField {
                 while (true) {
                     int random = (int) (Math.random() * size * size);
                     if (!numbers.contains(random)) {
-                        if (random == 0) blank = new Point(x, y);
+                        if (random == 0) {
+                            blank.setNewPoint(x, y);
+                        }
                         field[x][y] = random;
                         numbers.add(random);
                         break;
@@ -56,108 +125,23 @@ public class GameField {
                 }
             }
         }
-        if (!isSolvable()) newRandomGame(); //если не существует решений, создаем новую игру
+        if (!isSolvable()) newRandomGame(); //если не существует решений, создаем новую игру еще раз
     }
 
-    //Если N + K - четное, решение существует;
-    //где N - количество инверсий, а K = (номер строки пустоты) / 4 + 1; (это доказали несколько человек)
-    private boolean isSolvable() {
-        int n = 0;
-        int[] temp = new int[size * size];
-        int counter = 0;
-        //записал в темп чтобы проходиться по одномерному массиву
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                temp[counter] = field[x][y];
-                counter++;
-            }
-        }
-        //прохожусь по одномерному массиву и считаю перестановки
-        for (int i = 0; i < size * size - 1; i++) {
-            if (temp[i] < temp[i + 1]) n++;
-        }
-
-        return (blank.getY() / 4 + n + 1) % 2 == 0;
-    }
-
-    public void printField() {
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                System.out.print(field[x][y] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println("----------------");
-    }
-
-    //находится ли пустая ячейка около ячейки, которую надо передвинуть
-    private boolean isEmptyNear(int x, int y) { //x y - координаты ячейки, которую надо передвинуть
-        int xEmpty = blank.getX();
-        int yEmpty = blank.getY();
-        if (y == yEmpty) {
-            if (x + 1 == xEmpty || xEmpty + 1 == x) return true;
-        }
-        if (x == xEmpty) {
-            if (y + 1 == yEmpty || yEmpty + 1 == y) return true;
-        }
-        return false;
-    }
-
-    public List<Point> nearMoves() { //выводит список ближайших коррдинат ячеек, которые могут быть перемещены
-        List<Point> answer = new LinkedList<>();
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                if (isEmptyNear(x, y)) {
-                    Point temp = new Point(x, y);
-                    answer.add(temp);
-                }
-            }
-        }
-        return answer;
-    }
-
-    public boolean endOfGame() {
-        return howManyCellsOnPlace() == 15;
-    }
-
-    public int howManyCellsOnPlace() {
-        int counter = 0;
-        int answer = 0;
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                if (field[x][y] == counter) answer++;
-                counter++;
-            }
-        }
-        return answer;
-    }
-
-    public int howManyCellsNotOnPlace() {
-        int counter = 0;
-        int answer = 0;
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                if (field[x][y] != counter) answer++;
-                counter++;
-            }
-        }
-        return answer;
-    }
-
-    public int getSize() {
-        return size;
+    public int getH() {
+        return h;
     }
 
     public int getCell(int x, int y) {
         return field[x][y];
     }
 
-    public void setField(int[][] newField) {
-        field = newField;
+    public int getSize() {
+        return size;
     }
 
-    public int[][] getField() {
-        return field;
+    public boolean isWin() {
+        return h == 0;
     }
 
     @Override
@@ -173,6 +157,7 @@ public class GameField {
         }
         return true;
     }
+
 }
 // 0  1  2  3
 // 4  5  6  7
