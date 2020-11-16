@@ -3,6 +3,7 @@ package pack;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+
 import java.util.List;
 
 public class Controller {
@@ -38,7 +39,7 @@ public class Controller {
     }
 
     @FXML
-    public void startAuto() { //тут типо сделать запуск ии авторешатель
+    public void startAuto() {
         if (!alreadyComputed) {
             automation = new Automation(field);
             alreadyComputed = true;

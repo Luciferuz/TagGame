@@ -1,4 +1,5 @@
 package pack;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,16 +15,21 @@ public class GameField {
         analyzeH();
     }
 
+    //если ячейка не на своем месте, то считаем расстояние до ее нужного места: (дельта х) + (дельта у)
     private void analyzeH() {
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 if (field[x][y] == 0) {
                     blank = new Point(x, y);
+                } else if (field[x][y] != x * size + y + 1) { //если ячейка не равна своему номиналу и не ноль
+                    //считаем меру
+                    int nominal = field[x][y];
+                    int y0 = nominal / size; //на таком y должна быть
+                    int x0 = nominal - y0 * size - 1; //на таком x должна быть
+                    int dx = Math.abs(y - y0);
+                    int dy = Math.abs(x - x0);
+                    h = h + dx + dy;
                 }
-                //считаем меру
-                boolean logic1 = field[x][y] != x * size + y + 1; //если ячейка не равна своему номиналу
-                boolean logic2 = field[x][y] != 0;                //и если ячейка не ноль
-                if (logic1 && logic2) h += 1;
             }
         }
     }
@@ -36,8 +42,8 @@ public class GameField {
         //если походить нельзя, будет null
         GameField move1 = move(x, y, x - 1, y); //left
         GameField move2 = move(x, y, x + 1, y); //right
-        GameField move3 = move(x, y, x, y - 1); //down
-        GameField move4 = move(x, y, x, y + 1); //up
+        GameField move3 = move(x, y, x, y - 1); //up
+        GameField move4 = move(x, y, x, y + 1); //down
 
         neighbors.add(move1);
         neighbors.add(move2);
@@ -100,7 +106,7 @@ public class GameField {
                     if (temp[j] > temp[i]) n++;
                 }
             } else {
-               n = n + 1 + i / size;
+                n = n + 1 + i / size;
             }
         }
         return n % 2 == 0;
@@ -163,6 +169,16 @@ public class GameField {
 // 4  5  6  7
 // 8  9  10 11
 // 12 13 14 15
+
+// 1  2  3  4
+// 5  6  7  8  для 7  х = 2 ????               у = 1
+// 9  10 11 12
+// 13 14 15 0
+
+// 6  2  3  4
+// 5  1  7  8     nominal / size
+// 9  10 11 12    nominal - yo * size - 1
+// 13 14 15 0
 
 //   ---------> x 0 1 2 3
 //  |

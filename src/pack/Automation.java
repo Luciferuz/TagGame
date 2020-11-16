@@ -14,7 +14,6 @@ public class Automation {
     }
 
     private void run() {
-
         Comparator<Element> comparator = (o1, o2) -> {
             int m1 = measure(o1);
             int m2 = measure(o2);
@@ -23,7 +22,7 @@ public class Automation {
         PriorityQueue<Element> queue = new PriorityQueue<>(comparator);
         queue.add(new Element(null, initial));
 
-        while(true) {
+        while (true) {
             Element current = queue.poll();
 
             if (current.getField().isWin()) {
@@ -51,7 +50,7 @@ public class Automation {
             g++;
             temp = temp.getPrevious();
             if (temp == null) {
-                return g + h; // g(x) + h(x)
+                return g + h;
             }
         }
     }

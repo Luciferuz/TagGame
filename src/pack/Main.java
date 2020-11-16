@@ -7,63 +7,19 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-
 public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
 
-        int[][] done = new int[][]{
-                {1,2,3,4},
-                {5,6,7,8,},
-                {9,10,11,12},
-                {13,14,15,0},
+        int[][] array = new int[][]{ //31 ход
+                {1, 2, 4, 3},
+                {5, 8, 7, 6},
+                {9, 10, 14, 12},
+                {11, 13, 15, 0},
         };
 
-        int[][] array1 = new int[][]{
-                {1,2,0,8},
-                {5,6,3,7},
-                {9,10,11,12},
-                {13,14,15,4}
-        };
-
-        int[][] array2 = new int[][]{
-                {1,2,3,4},
-                {5,6,7,8},
-                {9,10,15,11},
-                {13,14,0,12}
-        };
-
-        int[][] array3 = new int[][]{
-                {1, 2, 3, 0},
-                {5, 6, 7, 8},
-                {9, 10, 11, 12},
-                {13, 14, 15, 4}
-        };
-
-        int[][] array4 = new int[][]{ //12 ходов
-                {1,6,2,3},
-                {9,5,8,4},
-                {10,0,7,11},
-                {13,14,15,12},
-        };
-
-        int[][] array5 = new int[][]{ //31 ход
-                {1,2,4,3},
-                {5,8,7,6},
-                {9,10,14,12},
-                {11,13,15,0},
-        };
-
-        int[][] array6 = new int[][]{ //29 ходов
-                {10,11,5,14},
-                {15,8,12,4},
-                {0,13,3,7},
-                {2,1,9,6},
-        };
-
-
-        GameField field = new GameField(array5);
+        GameField field = new GameField(array);
         Graphics graphics = new Graphics(field);
 
         stage.setTitle("Пятнашки");
