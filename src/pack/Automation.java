@@ -1,65 +1,87 @@
 package pack;
 
-import java.util.ArrayDeque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.*;
 
 public class Automation {
 
     private GameField initial;
-    private int size;
+    private List<GameField> result = new ArrayList<>();
 
-    public Automation (GameField field){ //передаем изначальную позицию
-        initial = field;
-        size = field.getSize();
+    public Automation(GameField initial) {
+        if (!initial.isSolvable()) throw new IllegalArgumentException("Нерешаемая комбинация");
+        this.initial = initial;
         run();
     }
 
-    public void run() { //основной алгоритм авторешателя
-        List<Point> moves = initial.nearMoves();
-        ArrayDeque<Element> queue = new ArrayDeque<>();
-        List<GameField> temp = newGameFields(initial, moves);
-        for (GameField element : temp) {
-            element.printField();
+    private void run() {
+
+        Comparator<Element> comparator = new Comparator<Element>() {
+            @Override
+            public int compare(Element o1, Element o2) {
+                int m1 = measure(o1);
+                int m2 = measure(o2);
+                return Integer.compare(m1, m2);
+            }
+        };
+        PriorityQueue<Element> queue = new PriorityQueue<>(comparator);
+        queue.add(new Element(null, initial));
+
+        while(true) {
+            Element current = queue.poll();
+
+            if (current.getField().isWin()) {
+                Element lastMove = new Element(current, current.getField());
+                addToResult(lastMove);
+                System.out.println("Количество ходов: " + result.size());
+                break;
+            }
+
+            for (GameField neighbour : current.getField().neighbors()) {
+                boolean logic1 = !containsInPath(current, neighbour); //чтобы не смотреть повторно
+                boolean logic2 = neighbour != null;
+                if (logic1 && logic2) {
+                    queue.add(new Element(current, neighbour));
+                }
+            }
         }
     }
 
-    public List<GameField> newGameFields (GameField before, List<Point> cellsThatCanBeMoved) { //будет создавать список новых игровыхполей которые могут возикнуть при передвижении пустого места в любом направдении (1 ход)
-        LinkedList<GameField> answer = new LinkedList<>();
-        for (Point cell : cellsThatCanBeMoved) {
-            int x = cell.getX();
-            int y = cell.getY();
-            int[][] fieldBefore = before.getField();
-            GameField temp = new GameField(fieldBefore);
-            temp.move(x,y);
-            answer.add(temp);
+    private int measure(Element element) {
+        Element temp = element;
+        int g = 0;
+        int h = element.getField().getH();
+        while (true) {
+            g++;
+            temp = temp.getPrevious();
+            if (temp == null) {
+                return g + h; // g(x) + h(x)
+            }
         }
-        return answer;
     }
 
-    /*
-    public boolean topLineIsDone() {
-        int counter = 1;
-        for (int x = 0; x < size; x++) {
-            if (field.getCell(x, 0) != counter) return false;
-            counter++;
+    private void addToResult(Element element) {
+        Element temp = element;
+        while (true) {
+            temp = temp.getPrevious();
+            if (temp == null) {
+                Collections.reverse(result);
+                break;
+            }
+            result.add(temp.getField());
         }
-        return true;
     }
 
-    public boolean leftLineIsDone() {
-        int counter = 1;
-        for (int y = 0; y < size; y++) {
-            if (field.getCell(0, y) != counter) return false;
-            counter += size;
+    private boolean containsInPath(Element element, GameField field) {
+        Element temp = element;
+        while (temp != null) {
+            if (temp.getField().equals(field)) return true;
+            temp = temp.getPrevious();
         }
-        return true;
+        return false;
     }
 
-
-     */
-
+    public List<GameField> getSolution() {
+        return result;
+    }
 
 }

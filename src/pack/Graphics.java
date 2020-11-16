@@ -1,8 +1,8 @@
 package pack;
 
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class Graphics {
                 newImage.setImage(picturesMap.get(field.getCell(x, y)));
                 newImage.setFitWidth(WIDTH / size);
                 newImage.setFitHeight(HEIGHT / size);
-                images[x][y] = newImage;
+                images[y][x] = newImage;
             }
         }
     }
@@ -37,10 +37,13 @@ public class Graphics {
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 int value = field.getCell(x, y);
-                images[x][y].setImage(picturesMap.get(value));
+                images[y][x].setImage(picturesMap.get(value));
             }
         }
+    }
 
+    public void setField(GameField field) {
+        this.field = field;
     }
 
     private void setPicturesMap() throws FileNotFoundException {
@@ -65,6 +68,14 @@ public class Graphics {
 
     public ImageView[][] getImages() {
         return images;
+    }
+
+    public void setDoneAlert(int resultSize) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Done");
+        alert.setHeaderText("Показ ходов завершен!");
+        alert.setContentText("Число ходов, необходимых для решения: " + resultSize);
+        alert.show();
     }
 
 }

@@ -2,8 +2,8 @@ package pack;
 
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import java.util.List;
 
 public class Controller {
 
@@ -11,7 +11,11 @@ public class Controller {
     private FlowPane flowpane;
     private GameField field;
     private Graphics graphics;
+    private Automation automation;
+    private List<GameField> result;
     private int size;
+    private int currentIndex = 0;
+    private boolean alreadyComputed = false;
 
     private void setImagesOnFlowPane() {
         flowpane.getChildren().clear();
@@ -35,7 +39,36 @@ public class Controller {
 
     @FXML
     public void startAuto() { //тут типо сделать запуск ии авторешатель
-        Automation automation = new Automation(field);
-        System.out.println("Нажата кнопка, чтобы начать сборку головоломки");
+        if (!alreadyComputed) {
+            automation = new Automation(field);
+            alreadyComputed = true;
+        }
+        result = automation.getSolution();
+        showMoves();
     }
+
+    //будет показывать ходы по нажатию кнопки
+    private void showMoves() {
+        nextMove();
+        currentIndex++;
+    }
+
+    private void nextMove() {
+        if (currentIndex >= result.size()) {
+            graphics.setDoneAlert(result.size());
+            currentIndex = 0;
+        }
+        graphics.setField(result.get(currentIndex));
+        graphics.updateUI();
+    }
+
+    @FXML
+    public void generateNewGame() {
+        alreadyComputed = false;
+        currentIndex = 0;
+        field.newRandomGame();
+        graphics.setField(field);
+        graphics.updateUI();
+    }
+
 }
