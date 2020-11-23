@@ -24,8 +24,8 @@ public class GameField {
                 } else if (field[x][y] != x * size + y + 1) { //если ячейка не равна своему номиналу и не ноль
                     //считаем меру
                     int nominal = field[x][y];
-                    int y0 = (nominal - 1) / size; //на таком x должна быть
-                    int x0 = nominal - y0 * size - 1; //на таком y должна быть
+                    int x0 = (nominal - 1) / size; //на таком x должна быть
+                    int y0 = nominal - x0 * size - 1; //на таком y должна быть
                     int dx = Math.abs(x - x0);
                     int dy = Math.abs(y - y0);
                     h = h + dx + dy;
