@@ -132,16 +132,16 @@ public class test {
         Automation automation10 = new Automation(new GameField(array10));
         Automation automation11 = new Automation(new GameField(arrayMoves));
         assertEquals(1,  automation0.getSolution().size());
-        assertEquals(25, automation1.getSolution().size());
+        assertEquals(23, automation1.getSolution().size());
         assertEquals(4,  automation2.getSolution().size());
-        assertEquals(24, automation3.getSolution().size());
+        assertEquals(20, automation3.getSolution().size());
         assertEquals(12, automation4.getSolution().size());
-        assertEquals(39, automation5.getSolution().size());
-        assertEquals(43, automation6.getSolution().size());
-        assertEquals(35, automation7.getSolution().size());
-        assertEquals(41, automation8.getSolution().size());
-        assertEquals(47, automation9.getSolution().size());
-        assertEquals(48, automation10.getSolution().size());
+        assertEquals(29, automation5.getSolution().size());
+        assertEquals(33, automation6.getSolution().size());
+        assertEquals(31, automation7.getSolution().size());
+        assertEquals(35, automation8.getSolution().size());
+        assertEquals(43, automation9.getSolution().size());
+        assertEquals(40, automation10.getSolution().size());
         assertEquals(10, automation11.getSolution().size());
     }
 

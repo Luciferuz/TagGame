@@ -43,8 +43,8 @@ public class Controller {
         if (!alreadyComputed) {
             automation = new Automation(field);
             alreadyComputed = true;
+            result = automation.getSolution();
         }
-        result = automation.getSolution();
         showMoves();
     }
 

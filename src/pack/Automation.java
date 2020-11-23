@@ -5,6 +5,7 @@ import java.util.*;
 public class Automation {
 
     private GameField initial;
+    private Set<GameField> checkedItems = new HashSet<>();
     private List<GameField> result = new ArrayList<>();
 
     public Automation(GameField initial) {
@@ -26,19 +27,24 @@ public class Automation {
             Element current = queue.poll();
 
             if (current.getField().isWin()) {
-                Element lastMove = new Element(current, current.getField());
-                addToResult(lastMove);
-                System.out.println("Количество ходов: " + result.size());
-                break;
-            }
-
-            for (GameField neighbour : current.getField().neighbors()) {
-                boolean logic1 = !containsInPath(current, neighbour); //чтобы не смотреть повторно
-                boolean logic2 = neighbour != null;
-                if (logic1 && logic2) {
-                    queue.add(new Element(current, neighbour));
+                    Element lastMove = new Element(current, current.getField());
+                    addToResult(lastMove);
+                    System.out.println("Количество ходов: " + result.size());
+                    break;
                 }
+
+            if (!checkedItems.contains(current.getField())) {
+
+                for (GameField neighbour : current.getField().neighbors()) {
+                    boolean logic1 = !containsInPath(current, neighbour); //чтобы не смотреть повторно
+                    boolean logic2 = neighbour != null;
+                    if (logic1 && logic2) {
+                        queue.add(new Element(current, neighbour));
+                    }
+                }
+
             }
+            checkedItems.add(current.getField());
         }
     }
 

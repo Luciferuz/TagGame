@@ -19,7 +19,14 @@ public class Main extends Application {
                 {11, 13, 15, 0},
         };
 
-        GameField field = new GameField(array);
+        int[][] array6 = new int[][]{
+                {9,14,6,3},
+                {1,7,2,4},
+                {5,13,8,11},
+                {10,15,12,0},
+        };
+
+        GameField field = new GameField(array6);
         Graphics graphics = new Graphics(field);
 
         stage.setTitle("Пятнашки");

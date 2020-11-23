@@ -1,5 +1,5 @@
 package pack;
-
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,10 +24,10 @@ public class GameField {
                 } else if (field[x][y] != x * size + y + 1) { //если ячейка не равна своему номиналу и не ноль
                     //считаем меру
                     int nominal = field[x][y];
-                    int y0 = nominal / size; //на таком y должна быть
-                    int x0 = nominal - y0 * size - 1; //на таком x должна быть
-                    int dx = Math.abs(y - y0);
-                    int dy = Math.abs(x - x0);
+                    int y0 = (nominal - 1) / size; //на таком x должна быть
+                    int x0 = nominal - y0 * size - 1; //на таком y должна быть
+                    int dx = Math.abs(x - x0);
+                    int dy = Math.abs(y - y0);
                     h = h + dx + dy;
                 }
             }
@@ -156,14 +156,13 @@ public class GameField {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         GameField gamefield = (GameField) obj;
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                if (field[x][y] != gamefield.field[x][y]) return false;
-            }
-        }
-        return true;
+        return Arrays.deepEquals(gamefield.field, field);
     }
 
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(field);
+    }
 }
 // 0  1  2  3
 // 4  5  6  7
